@@ -1,0 +1,24 @@
+{
+  "products": [
+    {
+      "id": "dts-accounting",
+      "name": "DTS Accounting",
+      "version": "1.0.1",
+      "platform": "Windows 10/11 · 64-bit",
+      "summary": "GST billing, e-invoice, e-way bill, Tally-style accounts, GSTR-1 export, and an AI assistant. One-time purchase includes 1 year of the Business plan.",
+      "priceLabel": "₹8,999 one-time · renewals from ₹3,999/year",
+      "action": "accounting",
+      "downloadUrl": "/DTS-Accounting-Setup-x64.exe"
+    },
+    {
+      "id": "dts-mandi-haryana",
+      "name": "DTS Mandi ERP — Haryana Edition",
+      "version": "1.3.5",
+      "platform": "Windows · offline-first",
+      "summary": "Grain-trader ERP for Haryana mandis: purchase (J Form), sale (I Form), stock, ledger, and trading margin. English UI on desktop.",
+      "releaseNotes": "v1.3.5 — choose your data folder, safer migrate/restore (empty zips never wipe books), faster firm open, Outstanding links to Advances, and print/backup errors shown clearly.",
+      "installedHint": "Already installed? Open DTS MANDI ERP → Update now. You do not download again from this page.",
+      "downloadUrl": "/DTS-Mandi-Haryana-x64.zip?v=1.3.5"
+    }
+  ]
+}
