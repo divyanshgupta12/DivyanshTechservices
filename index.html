@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divyansh Tech Services | Future-Ready IT Solutions</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Sora (Headings) & Manrope (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet Map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Razorpay SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <!-- EmailJS SDK for Automated Emails -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <!-- JWT Decode for Google Auth -->
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    
+    <!-- QR Code Generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    
+    <!-- HTML5 QR Code Scanner for Technician Dashboard -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    <!-- Firebase SDK (Compat version for easier integration) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Firebase Initialization & Database Layer -->
+    <script src="firebase-init.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        display: ['Sora', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#050a14',
+                            card: '#0f172a',
+                            cyan: '#00f0ff',
+                            emerald: '#10b981',
+                            purple: '#8b5cf6',
+                            danger: '#ef4444'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-slate-300 font-sans antialiased overflow-x-hidden">
+
+    <!-- Background Effects -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-brand-cyan/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-brand-emerald/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-20"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 border-b border-white/5 bg-brand-dark/90 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <!-- Back Button -->
+                    <button id="back-btn" onclick="goBack()" class="hidden items-center gap-2 px-3 py-2 rounded-lg glass text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-all">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span class="hidden sm:inline">Back</span>
+                    </button>
+                    
+                    <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="switchView('home')">
+                        <img src="DTs.png" alt="DTS Logo" class="h-12 w-auto object-contain" onerror="this.src='https://placehold.co/48x48/0f172a/00f0ff?text=DTS&font=montserrat'">
+                        <div class="hidden sm:block">
+                            <h1 class="font-display font-bold text-xl text-white tracking-wide">DIVYANSH</h1>
+                            <p class="text-[10px] text-brand-cyan tracking-[0.2em] uppercase">Tech Services</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    <button onclick="switchView('home')" class="nav-link text-sm font-medium text-slate-300 hover:text-brand-cyan transition-colors">Home</button>
+                    <button onclick="switchView('services')" class="nav-link text-sm font-medium text-slate-300 hover:text-brand-cyan transition-colors">Services</button>
+                    <button onclick="switchView('shop')" class="nav-link text-sm font-medium text-slate-300 hover:text-brand-cyan transition-colors">Shop</button>
+                    <button onclick="switchView('amc')" class="nav-link text-sm font-medium text-slate-300 hover:text-brand-cyan transition-colors">AMC Plans</button>
+                    <button onclick="switchView('dts-software')" class="nav-link text-sm font-medium text-brand-purple hover:text-brand-cyan transition-colors">DTS Software</button>
+                    <button onclick="switchView('dts-accounting')" class="nav-link text-sm font-medium text-brand-purple hover:text-brand-cyan transition-colors">DTS Accounting</button>
+                    <button onclick="switchView('collaboration')" class="nav-link text-sm font-medium text-brand-purple hover:text-brand-cyan transition-colors">Collaborate</button>
+                    
+                    <!-- Special Buttons -->
+                    <button onclick="openSpecialModal('home-door')" class="px-4 py-2 rounded-full bg-brand-emerald/20 text-brand-emerald border border-brand-emerald/50 text-sm font-bold hover:bg-brand-emerald/30 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-house"></i> Home Service
+                    </button>
+                    <button onclick="openSpecialModal('emergency')" class="px-4 py-2 rounded-full bg-brand-danger/20 text-brand-danger border border-brand-danger/50 text-sm font-bold hover:bg-brand-danger/30 transition-all flex items-center gap-2 animate-pulse">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Emergency
+                    </button>
+
+                    <!-- User / Admin Dropdown -->
+                    <div class="relative group">
+                        <button class="flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 hover:border-brand-cyan/50 transition-all text-sm font-medium text-white">
+                            <i class="fa-regular fa-user"></i>
+                            <span id="user-display-name">Account</span>
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="user-dropdown-content" class="absolute right-0 mt-2 w-56 glass rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right p-2">
+                            <!-- Dynamically populated by app.js -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="lg:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-slate-300 hover:text-white p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden glass border-t border-white/5">
+            <div id="mobile-menu-content" class="px-4 pt-2 pb-6 space-y-2">
+                <!-- Dynamically populated by app.js -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA (Views will be toggled here) -->
+    <main id="main-content" class="pt-20">
+        <!-- Views will be injected/managed by app.js -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-white/10 bg-brand-dark pt-16 pb-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div class="md:col-span-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="DTs.png" alt="DTS Logo" class="h-10 w-auto object-contain" onerror="this.src='https://placehold.co/40x40/0f172a/00f0ff?text=DTS&font=montserrat'">
+                        <div>
+                            <h1 class="font-display font-bold text-lg text-white tracking-wide">DIVYANSH</h1>
+                            <p class="text-[9px] text-brand-cyan tracking-[0.2em] uppercase">Tech Services</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Empowering homes and businesses with reliable, futuristic, and secure IT solutions.
+                    </p>
+                    <div class="flex items-center gap-3 mt-4">
+                        <a href="https://instagram.com/divyanshtech_services" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full glass flex items-center justify-center text-pink-400 hover:text-pink-300 hover:border-pink-400/50 transition-all">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="https://wa.me/919813443289" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-full glass flex items-center justify-center text-brand-emerald hover:text-brand-emerald/80 hover:border-brand-emerald/50 transition-all">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="mailto:divyanshgupta@divyanshtechservices.com" class="w-9 h-9 rounded-full glass flex items-center justify-center text-brand-cyan hover:text-brand-cyan/80 hover:border-brand-cyan/50 transition-all">
+                            <i class="fa-solid fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-bold text-white mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><button onclick="switchView('amc')" class="hover:text-brand-cyan transition-colors text-left w-full">AMC Plans</button></li>
+                        <li><button onclick="switchView('dts-software')" class="hover:text-brand-cyan transition-colors text-left w-full">DTS Software</button></li>
+                        <li><button onclick="switchView('dts-accounting')" class="hover:text-brand-cyan transition-colors text-left w-full">DTS Accounting</button></li>
+                        <li><button onclick="switchView('collaboration')" class="hover:text-brand-cyan transition-colors text-left w-full">Collaborate With Us</button></li>
+                        <li><button onclick="switchView('home')" class="hover:text-brand-cyan transition-colors text-left w-full">Service Areas</button></li>
+                        <li><button onclick="switchView('privacy')" class="hover:text-brand-cyan transition-colors text-left w-full">Privacy Policy</button></li>
+                        <li><button onclick="switchView('terms')" class="hover:text-brand-cyan transition-colors text-left w-full">Terms & Conditions</button></li>
+                        <li><button onclick="switchView('refund')" class="hover:text-brand-cyan transition-colors text-left w-full">Refund & Cancellation</button></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-bold text-white mb-4">Contact Us</h4>
+                    <ul class="space-y-3 text-sm text-slate-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-phone text-brand-cyan mt-1"></i>
+                            <a href="tel:+919813443289" class="hover:text-white">+91 9813443289</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-whatsapp text-brand-emerald mt-1"></i>
+                            <a href="https://wa.me/919813443289?text=Hi%20I%20want%20assistance" target="_blank" rel="noopener noreferrer" class="hover:text-white">WhatsApp Support</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-envelope text-brand-cyan mt-1"></i>
+                            <a href="mailto:divyanshgupta@divyanshtechservices.com" class="hover:text-white text-xs break-all">divyanshgupta@divyanshtechservices.com</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-brands fa-instagram text-pink-500 mt-1"></i>
+                            <a href="https://instagram.com/divyanshtech_services" target="_blank" rel="noopener noreferrer" class="hover:text-white">@divyanshtech_services</a>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text-brand-cyan mt-1"></i>
+                            <span>Rewari, Haryana, India</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-display font-bold text-white mb-4">Operational Areas</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 rounded-full glass text-xs text-brand-cyan border border-brand-cyan/30">Rewari</span>
+                        <span class="px-3 py-1 rounded-full glass text-xs text-brand-cyan border border-brand-cyan/30">Gurugram</span>
+                        <span class="px-3 py-1 rounded-full glass text-xs text-brand-cyan border border-brand-cyan/30">Delhi</span>
+                        <span class="px-3 py-1 rounded-full glass text-xs text-brand-cyan border border-brand-cyan/30">Noida</span>
+                        <span class="px-3 py-1 rounded-full glass text-xs text-brand-emerald border border-brand-emerald/30">Online (Global)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-500 text-sm">© 2024 Divyansh Tech Services. All rights reserved.</p>
+                <div class="flex items-center gap-4">
+                    <button id="footer-admin-btn" onclick="openAdminPinModal()" class="flex items-center gap-2 px-4 py-2 rounded-full border border-brand-emerald/40 text-brand-emerald text-xs font-bold hover:bg-brand-emerald/10 transition-all">
+                        <i class="fa-solid fa-user-shield"></i> Admin Login
+                    </button>
+                    <button id="footer-tech-btn" onclick="openTechLoginModal()" class="flex items-center gap-2 px-4 py-2 rounded-full border border-brand-cyan/40 text-brand-cyan text-xs font-bold hover:bg-brand-cyan/10 transition-all">
+                        <i class="fa-solid fa-user-gear"></i> Technician Login
+                    </button>
+                    <p class="text-slate-600 text-xs">Designed for the future of IT.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Special Booking Modal (Home Door / Emergency / Consultation) - 3-Step Wizard -->
+    <div id="special-booking-modal" class="fixed inset-0 z-[100] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-5 max-w-lg w-full border border-white/10 relative transform transition-all scale-95 opacity-0 max-h-[90vh] overflow-y-auto custom-scrollbar" id="special-booking-content">
+            <button onclick="closeSpecialModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white bg-white/5 rounded-full w-8 h-8 flex items-center justify-center transition-colors z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="mb-4 pr-6" id="special-modal-header">
+                <!-- Dynamic Header -->
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="flex items-center justify-center gap-2 mb-5" id="booking-step-indicator">
+                <div class="flex items-center gap-2">
+                    <div id="step-dot-1" class="w-8 h-8 rounded-full bg-brand-cyan text-brand-dark font-bold text-xs flex items-center justify-center transition-all">1</div>
+                    <span class="text-[10px] text-brand-cyan font-semibold hidden sm:inline">Requirements</span>
+                </div>
+                <div class="w-8 h-px bg-white/20"></div>
+                <div class="flex items-center gap-2">
+                    <div id="step-dot-2" class="w-8 h-8 rounded-full bg-white/10 text-slate-500 font-bold text-xs flex items-center justify-center transition-all">2</div>
+                    <span class="text-[10px] text-slate-500 font-semibold hidden sm:inline" id="step-label-2">Schedule</span>
+                </div>
+                <div class="w-8 h-px bg-white/20"></div>
+                <div class="flex items-center gap-2">
+                    <div id="step-dot-3" class="w-8 h-8 rounded-full bg-white/10 text-slate-500 font-bold text-xs flex items-center justify-center transition-all">3</div>
+                    <span class="text-[10px] text-slate-500 font-semibold hidden sm:inline" id="step-label-3">Confirm</span>
+                </div>
+            </div>
+
+            <form id="special-booking-form" onsubmit="handleBookingStep(event)" class="space-y-3">
+                <!-- STEP 1: Requirement Details -->
+                <div id="booking-step-1" class="booking-step">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Full Name *</label>
+                            <input type="text" name="fullName" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Email *</label>
+                            <input type="email" name="email" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors" placeholder="you@email.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number *</label>
+                        <input type="tel" name="phone" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors" placeholder="+91 98XXX XXXXX">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Service Category *</label>
+                        <select name="serviceCategory" id="special-service-category" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors">
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Service For</label>
+                            <select name="serviceFor" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors">
+                                <option value="Home">Home / Residential</option>
+                                <option value="Office">Office / Business</option>
+                                <option value="Shop">Shop / Retail</option>
+                                <option value="Factory">Factory / Industrial</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">No. of Devices</label>
+                            <input type="number" name="deviceCount" min="1" max="100" value="1" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Describe Your Issue / Requirement</label>
+                        <textarea name="description" rows="2" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors resize-none" placeholder="Briefly describe what you need help with..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Urgency Level</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-brand-emerald/50 transition-all text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="radio" name="urgency" value="Normal" checked class="hidden"> Normal
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-yellow-500/50 transition-all text-xs text-slate-300 has-[:checked]:bg-yellow-500/10 has-[:checked]:border-yellow-500/50 has-[:checked]:text-yellow-500">
+                                <input type="radio" name="urgency" value="Priority" class="hidden"> Priority
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-brand-danger/50 transition-all text-xs text-slate-300 has-[:checked]:bg-brand-danger/10 has-[:checked]:border-brand-danger/50 has-[:checked]:text-brand-danger">
+                                <input type="radio" name="urgency" value="Urgent" class="hidden"> Urgent
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-brand-cyan to-brand-emerald text-brand-dark font-bold text-sm hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2">
+                        Next: Schedule Visit <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- STEP 2: Schedule & Address -->
+                <div id="booking-step-2" class="booking-step hidden">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Complete Address *</label>
+                        <div class="relative">
+                            <textarea name="address" id="booking-address" rows="2" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 pr-10 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors resize-none" placeholder="House No, Street, Landmark"></textarea>
+                            <button type="button" onclick="getCurrentLocation()" class="absolute right-2 top-2 text-brand-cyan hover:text-white transition-colors p-1" title="Use Current Location">
+                                <i class="fa-solid fa-location-crosshairs text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Pincode</label>
+                            <input type="text" name="pincode" maxlength="6" onblur="fetchAddressByPincode(this.value)" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors" placeholder="e.g., 123456">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">City</label>
+                            <input type="text" name="city" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors" placeholder="Auto-filled">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">State</label>
+                            <input type="text" name="state" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors" placeholder="Auto-filled">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Preferred Date *</label>
+                            <div class="relative">
+                                <input type="date" name="date" class="relative w-full bg-brand-dark/50 border border-white/10 rounded-lg pl-9 pr-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors accent-brand-cyan cursor-pointer">
+                                <i class="fa-solid fa-calendar-days absolute left-3 top-1/2 -translate-y-1/2 text-brand-cyan z-20 pointer-events-none"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Preferred Time *</label>
+                            <div class="relative">
+                                <input type="time" name="time" class="relative w-full bg-brand-dark/50 border border-white/10 rounded-lg pl-9 pr-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors accent-brand-cyan cursor-pointer">
+                                <i class="fa-solid fa-clock absolute left-3 top-1/2 -translate-y-1/2 text-brand-cyan z-20 pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Preferred Contact Method</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-brand-cyan/50 transition-all text-xs text-slate-300 has-[:checked]:bg-brand-cyan/10 has-[:checked]:border-brand-cyan/50 has-[:checked]:text-brand-cyan">
+                                <input type="radio" name="contactMethod" value="Call" checked class="hidden"> <i class="fa-solid fa-phone text-[10px]"></i> Call
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-brand-emerald/50 transition-all text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="radio" name="contactMethod" value="WhatsApp" class="hidden"> <i class="fa-brands fa-whatsapp text-[10px]"></i> WhatsApp
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-brand-purple/50 transition-all text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="contactMethod" value="Email" class="hidden"> <i class="fa-solid fa-envelope text-[10px]"></i> Email
+                            </label>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="goToBookingStep(1)" class="flex-1 py-2.5 rounded-lg border border-white/20 text-slate-300 font-semibold text-sm hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+                        <button type="submit" class="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-brand-cyan to-brand-emerald text-brand-dark font-bold text-sm hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2">
+                            Next: Review <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Review & Confirm -->
+                <div id="booking-step-3" class="booking-step hidden">
+                    <div id="booking-review-summary" class="bg-brand-dark/50 rounded-xl p-4 border border-white/10 space-y-2 mb-4">
+                        <!-- Populated dynamically by JS -->
+                    </div>
+                    <div class="space-y-3">
+                        <label class="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-brand-cyan/30 transition-all">
+                            <input type="checkbox" id="agree-terms" required class="accent-brand-cyan w-4 h-4 mt-0.5 flex-shrink-0">
+                            <span class="text-xs text-slate-300">I agree to the <button type="button" onclick="switchView('terms')" class="text-brand-cyan underline">Terms & Conditions</button> and <button type="button" onclick="switchView('refund')" class="text-brand-cyan underline">Refund & Cancellation Policy</button> of DTS. *</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-brand-emerald/30 transition-all">
+                            <input type="checkbox" id="agree-service" required class="accent-brand-emerald w-4 h-4 mt-0.5 flex-shrink-0">
+                            <span class="text-xs text-slate-300">I understand that the final price may vary based on on-site diagnosis and the amount shown is the booking/visit charge. *</span>
+                        </label>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button type="button" onclick="goToBookingStep(2)" class="flex-1 py-2.5 rounded-lg border border-white/20 text-slate-300 font-semibold text-sm hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+                        <button type="submit" id="booking-final-submit" class="flex-1 btn-glow py-2.5 rounded-lg bg-gradient-to-r from-brand-cyan to-brand-emerald text-brand-dark font-bold text-sm hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-lock"></i> <span id="booking-pay-btn-text">Confirm & Pay</span>
+                        </button>
+                    </div>
+                    <p class="text-center text-[10px] text-slate-500 mt-2 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-shield-halved text-brand-emerald"></i> Secured by Razorpay
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- AMC Purchase Modal - 3-Step Wizard -->
+    <div id="amc-purchase-modal" class="fixed inset-0 z-[100] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-5 max-w-lg w-full border border-white/10 relative transform transition-all scale-95 opacity-0 max-h-[90vh] overflow-y-auto custom-scrollbar" id="amc-purchase-content">
+            <button onclick="closeAMCPurchaseModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white bg-white/5 rounded-full w-8 h-8 flex items-center justify-center transition-colors z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div class="mb-4 pr-6" id="amc-modal-header">
+                <!-- Dynamic Header -->
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="flex items-center justify-center gap-2 mb-5" id="amc-step-indicator">
+                <div class="flex items-center gap-2">
+                    <div id="amc-step-dot-1" class="w-8 h-8 rounded-full bg-brand-emerald text-brand-dark font-bold text-xs flex items-center justify-center transition-all">1</div>
+                    <span class="text-[10px] text-brand-emerald font-semibold hidden sm:inline">Your Details</span>
+                </div>
+                <div class="w-8 h-px bg-white/20"></div>
+                <div class="flex items-center gap-2">
+                    <div id="amc-step-dot-2" class="w-8 h-8 rounded-full bg-white/10 text-slate-500 font-bold text-xs flex items-center justify-center transition-all">2</div>
+                    <span class="text-[10px] text-slate-500 font-semibold hidden sm:inline" id="amc-step-label-2">Devices</span>
+                </div>
+                <div class="w-8 h-px bg-white/20"></div>
+                <div class="flex items-center gap-2">
+                    <div id="amc-step-dot-3" class="w-8 h-8 rounded-full bg-white/10 text-slate-500 font-bold text-xs flex items-center justify-center transition-all">3</div>
+                    <span class="text-[10px] text-slate-500 font-semibold hidden sm:inline" id="amc-step-label-3">Confirm</span>
+                </div>
+            </div>
+
+            <form id="amc-purchase-form" onsubmit="handleAMCPurchaseStep(event)" class="space-y-3">
+                <!-- STEP 1: Personal Details -->
+                <div id="amc-step-1" class="amc-step">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Full Name *</label>
+                            <input type="text" name="amc_fullName" id="amc_fullName" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Email *</label>
+                            <input type="email" name="amc_email" id="amc_email" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors" placeholder="you@email.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Phone Number *</label>
+                        <input type="tel" name="amc_phone" id="amc_phone" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors" placeholder="+91 98XXX XXXXX">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Complete Address *</label>
+                        <textarea name="amc_address" id="amc_address" rows="2" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors resize-none" placeholder="House No, Street, Landmark, City"></textarea>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">Pincode</label>
+                            <input type="text" name="amc_pincode" maxlength="6" onblur="fetchAddressByPincode(this.value, 'amc_')" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors" placeholder="e.g., 123456">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">City</label>
+                            <input type="text" name="amc_city" id="amc_city" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors" placeholder="Auto-filled">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-medium text-slate-400 mb-1">State</label>
+                            <input type="text" name="amc_state" id="amc_state" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors" placeholder="Auto-filled">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Service For *</label>
+                        <select name="amc_serviceFor" id="amc_serviceFor" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors">
+                            <option value="Home">Home / Residential</option>
+                            <option value="Office">Office / Business</option>
+                            <option value="Shop">Shop / Retail</option>
+                            <option value="Factory">Factory / Industrial</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="validateAMCStep1()" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-brand-cyan to-brand-emerald text-brand-dark font-bold text-sm hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2">
+                        Next: Device Details <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- STEP 2: Device & Service Details -->
+                <div id="amc-step-2" class="amc-step hidden">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Number of Devices to Cover *</label>
+                        <input type="number" name="amc_deviceCount" id="amc_deviceCount" min="1" max="50" value="1" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-2">Device Types *</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="checkbox" name="amc_deviceTypes" value="Desktop" class="accent-brand-emerald w-3.5 h-3.5"> <i class="fa-solid fa-computer text-[10px]"></i> Desktop
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="checkbox" name="amc_deviceTypes" value="Laptop" class="accent-brand-emerald w-3.5 h-3.5"> <i class="fa-solid fa-laptop text-[10px]"></i> Laptop
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="checkbox" name="amc_deviceTypes" value="Printer" class="accent-brand-emerald w-3.5 h-3.5"> <i class="fa-solid fa-print text-[10px]"></i> Printer
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="checkbox" name="amc_deviceTypes" value="Server" class="accent-brand-emerald w-3.5 h-3.5"> <i class="fa-solid fa-server text-[10px]"></i> Server
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="checkbox" name="amc_deviceTypes" value="CCTV" class="accent-brand-emerald w-3.5 h-3.5"> <i class="fa-solid fa-video text-[10px]"></i> CCTV
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="checkbox" name="amc_deviceTypes" value="Network" class="accent-brand-emerald w-3.5 h-3.5"> <i class="fa-solid fa-network-wired text-[10px]"></i> Network
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Preferred Contact Method</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="radio" name="amc_contactMethod" value="Call" checked class="hidden"> <i class="fa-solid fa-phone text-[10px]"></i> Call
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="radio" name="amc_contactMethod" value="WhatsApp" class="hidden"> <i class="fa-brands fa-whatsapp text-[10px]"></i> WhatsApp
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-emerald/10 has-[:checked]:border-brand-emerald/50 has-[:checked]:text-brand-emerald">
+                                <input type="radio" name="amc_contactMethod" value="Email" class="hidden"> <i class="fa-solid fa-envelope text-[10px]"></i> Email
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">Any Existing Issues? (Optional)</label>
+                        <textarea name="amc_issues" rows="2" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-emerald transition-colors resize-none" placeholder="Describe any current IT issues you're facing..."></textarea>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="goToAMCStep(1)" class="flex-1 py-2.5 rounded-lg border border-white/20 text-slate-300 font-semibold text-sm hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" onclick="validateAMCStep2()" class="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-brand-cyan to-brand-emerald text-brand-dark font-bold text-sm hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2">
+                            Next: Review <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: Review & Checkout -->
+                <div id="amc-step-3" class="amc-step hidden">
+                    <div id="amc-review-summary" class="bg-brand-dark/50 rounded-xl p-4 border border-white/10 space-y-2 mb-4">
+                        <!-- Populated dynamically by JS -->
+                    </div>
+                    
+                    <!-- Coupon Code Section -->
+                    <div class="bg-brand-dark/30 rounded-xl p-4 border border-white/10 mb-4">
+                        <h4 class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-ticket text-brand-purple"></i> Apply Coupon Code
+                        </h4>
+                        <div class="flex gap-2">
+                            <input type="text" id="amc-coupon-input" placeholder="Enter coupon code" class="flex-1 bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors uppercase font-mono" maxlength="20">
+                            <button type="button" onclick="applyAMCCoupon()" class="px-4 py-2.5 rounded-lg bg-brand-purple/20 text-brand-purple border border-brand-purple/50 text-sm font-semibold hover:bg-brand-purple/30 transition-all whitespace-nowrap">
+                                <i class="fa-solid fa-check mr-1"></i> Apply
+                            </button>
+                        </div>
+                        <div id="amc-coupon-message" class="mt-2 hidden"></div>
+                        
+                        <!-- Coupon Applied Summary (hidden by default) -->
+                        <div id="amc-coupon-applied" class="hidden mt-3 p-3 rounded-lg bg-brand-emerald/10 border border-brand-emerald/30">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-tag text-brand-emerald"></i>
+                                    <span class="text-sm font-semibold text-brand-emerald" id="amc-coupon-code-display"></span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-sm font-bold text-brand-emerald" id="amc-coupon-discount-display"></span>
+                                    <button type="button" onclick="removeAMCCoupon()" class="text-red-400 hover:text-red-300 transition-colors">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-brand-emerald/30 transition-all">
+                            <input type="checkbox" id="amc-agree-terms" required class="accent-brand-emerald w-4 h-4 mt-0.5 flex-shrink-0">
+                            <span class="text-xs text-slate-300">I agree to the <button type="button" onclick="switchView('terms')" class="text-brand-cyan underline">Terms & Conditions</button> and understand the AMC plan details. *</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:border-brand-cyan/30 transition-all">
+                            <input type="checkbox" id="amc-agree-auto" required class="accent-brand-cyan w-4 h-4 mt-0.5 flex-shrink-0">
+                            <span class="text-xs text-slate-300">I understand this is a recurring subscription and can be cancelled anytime as per the cancellation policy. *</span>
+                        </label>
+                    </div>
+                    <div class="flex gap-3 mt-4">
+                        <button type="button" onclick="goToAMCStep(2)" class="flex-1 py-2.5 rounded-lg border border-white/20 text-slate-300 font-semibold text-sm hover:bg-white/5 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+                        <button type="submit" id="amc-final-submit" class="flex-1 btn-glow py-2.5 rounded-lg bg-gradient-to-r from-brand-cyan to-brand-emerald text-brand-dark font-bold text-sm hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-lock"></i> <span id="amc-pay-btn-text">Checkout & Pay</span>
+                        </button>
+                    </div>
+                    <p class="text-center text-[10px] text-slate-500 mt-2 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-shield-halved text-brand-emerald"></i> Secured by Razorpay
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Website/Software Request Modal -->
+    <div id="web-request-modal" class="fixed inset-0 z-[100] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-5 max-w-2xl w-full border border-brand-purple/30 relative transform transition-all scale-95 opacity-0 max-h-[90vh] overflow-y-auto custom-scrollbar" id="web-request-content">
+            <button onclick="closeWebRequestModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white bg-white/5 rounded-full w-8 h-8 flex items-center justify-center transition-colors z-10">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="mb-4 pr-8">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-12 h-12 rounded-full bg-brand-purple/20 flex items-center justify-center">
+                        <i class="fa-solid fa-code text-brand-purple text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-2xl text-white">Build Your Dream Website</h3>
+                        <p class="text-slate-400 text-sm">Tell us about your project in 15 quick questions</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Web Request Step Indicator -->
+            <div class="flex items-center justify-center gap-1 mb-5" id="webreq-step-indicator">
+                <div id="webreq-dot-1" class="w-7 h-7 rounded-full bg-brand-purple text-white font-bold text-[10px] flex items-center justify-center transition-all">1</div>
+                <div class="w-4 h-px bg-white/20"></div>
+                <div id="webreq-dot-2" class="w-7 h-7 rounded-full bg-white/10 text-slate-500 font-bold text-[10px] flex items-center justify-center transition-all">2</div>
+                <div class="w-4 h-px bg-white/20"></div>
+                <div id="webreq-dot-3" class="w-7 h-7 rounded-full bg-white/10 text-slate-500 font-bold text-[10px] flex items-center justify-center transition-all">3</div>
+                <div class="w-4 h-px bg-white/20"></div>
+                <div id="webreq-dot-4" class="w-7 h-7 rounded-full bg-white/10 text-slate-500 font-bold text-[10px] flex items-center justify-center transition-all">4</div>
+                <div class="w-4 h-px bg-white/20"></div>
+                <div id="webreq-dot-5" class="w-7 h-7 rounded-full bg-white/10 text-slate-500 font-bold text-[10px] flex items-center justify-center transition-all">5</div>
+            </div>
+            <form id="web-request-form" onsubmit="handleWebRequestStep(event)" class="space-y-3">
+                <!-- Step 1: Q1-Q3 -->
+                <div id="webreq-step-1" class="webreq-step">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">1. What type of website/software do you need? *</label>
+                        <select name="wr_type" id="wr_type" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors">
+                            <option value="">Select type...</option>
+                            <option value="Business Website">Business / Corporate Website</option>
+                            <option value="E-commerce Store">E-commerce / Online Store</option>
+                            <option value="Portfolio">Portfolio / Personal Website</option>
+                            <option value="Blog">Blog / Content Site</option>
+                            <option value="Landing Page">Landing Page</option>
+                            <option value="Web Application">Web Application (SaaS)</option>
+                            <option value="Mobile App">Mobile App</option>
+                            <option value="ERP/CRM Software">ERP / CRM Software</option>
+                            <option value="School/College Management">School / College Management</option>
+                            <option value="Hospital Management">Hospital / Clinic Management</option>
+                            <option value="Restaurant POS">Restaurant POS</option>
+                            <option value="Inventory/Billing Software">Inventory / Billing Software</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">2. What industry is your business in? *</label>
+                        <input type="text" name="wr_industry" id="wr_industry" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="e.g., Healthcare, Education, Retail, Real Estate...">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">3. Do you have an existing brand/logo? *</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_brand" id="wr_brand_1" value="Yes, have logo" class="hidden"> Yes, have logo
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_brand" value="Need logo design" class="hidden"> Need logo
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_brand" value="No, not needed" class="hidden"> Not needed
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-brand-purple to-brand-cyan text-white font-bold text-sm hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all flex items-center justify-center gap-2">
+                        Next <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <!-- Step 2: Q4-Q6 -->
+                <div id="webreq-step-2" class="webreq-step hidden">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">4. What design style do you prefer? *</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_design" value="Modern & Minimal" class="hidden"> Modern & Minimal
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_design" value="Bold & Colorful" class="hidden"> Bold & Colorful
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_design" value="Corporate & Professional" class="hidden"> Corporate & Pro
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_design" value="Creative & Artistic" class="hidden"> Creative & Artistic
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">5. How many pages/sections do you need?</label>
+                        <select name="wr_pages" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors">
+                            <option value="1-5">1-5 pages (Basic)</option>
+                            <option value="5-10">5-10 pages (Standard)</option>
+                            <option value="10-25">10-25 pages (Advanced)</option>
+                            <option value="25+">25+ pages (Enterprise)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">6. Do you need a mobile app as well?</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_mobile" value="Yes - Android & iOS" class="hidden"> Both
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_mobile" value="Yes - Android only" class="hidden"> Android
+                            </label>
+                            <label class="flex items-center justify-center gap-1 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple">
+                                <input type="radio" name="wr_mobile" value="No mobile app" checked class="hidden"> Not needed
+                            </label>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="goToWebRequestStep(1)" class="flex-1 py-2.5 rounded-lg border border-white/20 text-slate-300 font-semibold text-sm hover:bg-white/5 transition-all"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button type="submit" class="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-brand-purple to-brand-cyan text-white font-bold text-sm transition-all flex items-center justify-center gap-2">Next <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                <!-- Step 3: Q7-Q10 -->
+                <div id="webreq-step-3" class="webreq-step hidden">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">7. Which features do you need? (Select all that apply)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="User Login/Signup" class="accent-brand-purple w-3.5 h-3.5"> User Login/Signup</label>
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="Payment Gateway" class="accent-brand-purple w-3.5 h-3.5"> Payment Gateway</label>
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="Admin Dashboard" class="accent-brand-purple w-3.5 h-3.5"> Admin Dashboard</label>
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="Search Functionality" class="accent-brand-purple w-3.5 h-3.5"> Search</label>
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="Chat/WhatsApp Integration" class="accent-brand-purple w-3.5 h-3.5"> Chat/WhatsApp</label>
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="Booking/Appointment System" class="accent-brand-purple w-3.5 h-3.5"> Booking System</label>
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="Inventory Management" class="accent-brand-purple w-3.5 h-3.5"> Inventory Mgmt</label>
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="Reporting & Analytics" class="accent-brand-purple w-3.5 h-3.5"> Reports & Analytics</label>
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="Email Notifications" class="accent-brand-purple w-3.5 h-3.5"> Email Notifications</label>
+                            <label class="flex items-center gap-2 p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50"><input type="checkbox" name="wr_features" value="Social Media Integration" class="accent-brand-purple w-3.5 h-3.5"> Social Media</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">8. Do you need content writing / copywriting?</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple"><input type="radio" name="wr_content" value="Yes, need content" class="hidden"> Yes, needed</label>
+                            <label class="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple"><input type="radio" name="wr_content" value="I will provide content" checked class="hidden"> I'll provide</label>
+                            <label class="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple"><input type="radio" name="wr_content" value="Need help with content" class="hidden"> Need help</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">9. Do you need SEO / Digital Marketing?</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple"><input type="radio" name="wr_seo" value="Yes, SEO needed" class="hidden"> Yes, SEO</label>
+                            <label class="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple"><input type="radio" name="wr_seo" value="SEO + Marketing" class="hidden"> SEO + Marketing</label>
+                            <label class="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple"><input type="radio" name="wr_seo" value="Not needed" checked class="hidden"> Not needed</label>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">10. Do you have a domain name?</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <label class="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple"><input type="radio" name="wr_domain" value="Yes, have domain" class="hidden"> Have domain</label>
+                            <label class="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple"><input type="radio" name="wr_domain" value="Need help buying" class="hidden"> Need help</label>
+                            <label class="flex items-center justify-center p-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer text-xs text-slate-300 has-[:checked]:bg-brand-purple/10 has-[:checked]:border-brand-purple/50 has-[:checked]:text-brand-purple"><input type="radio" name="wr_domain" value="No domain needed" checked class="hidden"> Not needed</label>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="goToWebRequestStep(2)" class="flex-1 py-2.5 rounded-lg border border-white/20 text-slate-300 font-semibold text-sm hover:bg-white/5 transition-all"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button type="submit" class="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-brand-purple to-brand-cyan text-white font-bold text-sm transition-all flex items-center justify-center gap-2">Next <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                <!-- Step 4: Q11-Q13 -->
+                <div id="webreq-step-4" class="webreq-step hidden">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">11. Any reference websites you like?</label>
+                        <input type="text" name="wr_reference" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="e.g., google.com, amazon.in (comma separated)">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">12. What is your expected timeline?</label>
+                        <select name="wr_timeline" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors">
+                            <option value="As soon as possible">As soon as possible</option>
+                            <option value="Within 2 weeks">Within 2 weeks</option>
+                            <option value="Within 1 month">Within 1 month</option>
+                            <option value="Within 2-3 months">Within 2-3 months</option>
+                            <option value="No rush, quality first">No rush, quality first</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">13. What is your budget range?</label>
+                        <select name="wr_budget" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors">
+                            <option value="Under ₹10,000">Under ₹10,000</option>
+                            <option value="₹10,000 - ₹25,000">₹10,000 - ₹25,000</option>
+                            <option value="₹25,000 - ₹50,000">₹25,000 - ₹50,000</option>
+                            <option value="₹50,000 - ₹1,00,000">₹50,000 - ₹1,00,000</option>
+                            <option value="₹1,00,000+">₹1,00,000+</option>
+                            <option value="Need a quote">Need a quote</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" onclick="goToWebRequestStep(3)" class="flex-1 py-2.5 rounded-lg border border-white/20 text-slate-300 font-semibold text-sm hover:bg-white/5 transition-all"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button type="submit" class="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-brand-purple to-brand-cyan text-white font-bold text-sm transition-all flex items-center justify-center gap-2">Next <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                <!-- Step 5: Q14-Q15 + Contact + Submit -->
+                <div id="webreq-step-5" class="webreq-step hidden">
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">14. Any specific requirements or additional features?</label>
+                        <textarea name="wr_additional" rows="3" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors resize-none" placeholder="Describe any specific features, integrations, or requirements..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-medium text-slate-400 mb-1">15. How should we contact you?</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <input type="text" name="wr_name" id="wr_name" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="Your Name *">
+                            </div>
+                            <div>
+                                <input type="tel" name="wr_phone" id="wr_phone" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="Phone Number *">
+                            </div>
+                        </div>
+                        <input type="email" name="wr_email" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-3 py-2.5 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors mt-3" placeholder="Email Address">
+                    </div>
+                    <div class="flex gap-3 mt-2">
+                        <button type="button" onclick="goToWebRequestStep(4)" class="flex-1 py-2.5 rounded-lg border border-white/20 text-slate-300 font-semibold text-sm hover:bg-white/5 transition-all"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                        <button type="submit" class="flex-1 btn-glow py-2.5 rounded-lg bg-gradient-to-r from-brand-purple to-brand-cyan text-white font-bold text-sm hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Submit Request
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin PIN Modal -->
+    <div id="admin-pin-modal" class="fixed inset-0 z-[110] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-8 max-w-sm w-full border border-brand-emerald/30 relative text-center">
+            <h3 class="font-display font-bold text-xl text-white mb-4">Admin Access</h3>
+            <p class="text-slate-400 text-sm mb-6">Enter the 4-digit admin PIN to access the dashboard.</p>
+            <input type="password" id="admin-pin-input" maxlength="4" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-center text-2xl tracking-widest focus:outline-none focus:border-brand-emerald transition-colors mb-4" placeholder="****">
+            <button onclick="verifyAdminPin()" class="w-full py-3 rounded-lg bg-brand-emerald text-brand-dark font-bold hover:bg-brand-emerald/80 transition-all">
+                Unlock Dashboard
+            </button>
+            <button onclick="closeAdminPinModal()" class="w-full mt-3 py-2 text-slate-400 text-sm hover:text-white">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Technician Login Modal -->
+    <div id="tech-login-modal" class="fixed inset-0 z-[110] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-8 max-w-md w-full border border-brand-cyan/30 relative transform transition-all scale-95 opacity-0" id="tech-login-content">
+            <button onclick="closeTechLoginModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-brand-cyan to-brand-emerald flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-user-gear text-3xl text-white"></i>
+                </div>
+                <h3 class="font-display font-bold text-2xl text-white mb-2">Technician Login</h3>
+                <p class="text-slate-400 text-sm">Access your assigned tasks and earnings</p>
+            </div>
+
+            <form onsubmit="handleTechLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Technician ID</label>
+                    <input type="text" id="tech-login-id" name="techId" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors" placeholder="e.g., TECH001">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Password</label>
+                    <input type="password" id="tech-login-password" name="password" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors" placeholder="Enter your password">
+                </div>
+                <button type="submit" class="w-full btn-glow py-3 rounded-lg bg-gradient-to-r from-brand-cyan to-brand-emerald text-brand-dark font-bold hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login as Technician
+                </button>
+            </form>
+
+            <div class="mt-6 p-4 rounded-lg bg-brand-dark/50 border border-white/5">
+                <p class="text-xs text-slate-400 text-center">
+                    <i class="fa-solid fa-circle-info mr-1"></i> 
+                    Contact admin if you don't have credentials
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Scanner Modal -->
+    <div id="qr-scanner-modal" class="fixed inset-0 z-[120] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-6 max-w-lg w-full border border-brand-cyan/30 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeQRScanner()" class="absolute top-4 right-4 text-slate-400 hover:text-white z-10">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <h3 class="font-display font-bold text-xl text-white mb-4 text-center">
+                <i class="fa-solid fa-qrcode mr-2 text-brand-cyan"></i> Scan Customer QR Code
+            </h3>
+            
+            <div id="qr-scanner-container" class="relative w-full aspect-square bg-black rounded-xl overflow-hidden mb-4">
+                <!-- html5-qrcode will render here -->
+            </div>
+            
+            <p class="text-sm text-slate-400 text-center mb-4">
+                <i class="fa-solid fa-info-circle mr-1"></i> Position the customer's QR code within the frame to scan
+            </p>
+            
+            <div id="qr-scan-result" class="hidden p-4 rounded-lg bg-brand-emerald/10 border border-brand-emerald/30">
+                <p class="text-sm text-brand-emerald font-semibold mb-2">
+                    <i class="fa-solid fa-check-circle mr-1"></i> QR Code Scanned Successfully!
+                </p>
+                <div id="qr-scan-details" class="text-xs text-slate-300 space-y-1"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Upload Modal -->
+    <div id="photo-upload-modal" class="fixed inset-0 z-[120] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-6 max-w-2xl w-full border border-brand-cyan/30 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closePhotoUploadModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <h3 class="font-display font-bold text-xl text-white mb-4">
+                <i class="fa-solid fa-camera mr-2 text-brand-cyan"></i> Upload Completion Photos
+            </h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Before Photo</label>
+                    <div class="relative">
+                        <input type="file" id="before-photo" accept="image/*" capture="environment" onchange="previewPhoto(this, 'before')" class="hidden">
+                        <label for="before-photo" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-white/20 rounded-xl cursor-pointer hover:border-brand-cyan/50 transition-all">
+                            <div id="before-preview" class="w-full h-full flex flex-col items-center justify-center">
+                                <i class="fa-solid fa-camera text-4xl text-slate-500 mb-2"></i>
+                                <p class="text-sm text-slate-400">Click to upload before photo</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">After Photo</label>
+                    <div class="relative">
+                        <input type="file" id="after-photo" accept="image/*" capture="environment" onchange="previewPhoto(this, 'after')" class="hidden">
+                        <label for="after-photo" class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-white/20 rounded-xl cursor-pointer hover:border-brand-cyan/50 transition-all">
+                            <div id="after-preview" class="w-full h-full flex flex-col items-center justify-center">
+                                <i class="fa-solid fa-camera text-4xl text-slate-500 mb-2"></i>
+                                <p class="text-sm text-slate-400">Click to upload after photo</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-2">Completion Notes (Optional)</label>
+                    <textarea id="completion-notes" rows="3" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-cyan transition-colors" placeholder="Add any notes about the completed work..."></textarea>
+                </div>
+                
+                <button onclick="submitCompletionPhotos()" class="w-full btn-glow py-3 rounded-lg bg-gradient-to-r from-brand-cyan to-brand-emerald text-brand-dark font-bold hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-check-circle"></i> Submit Completion Photos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (Login / Sign Up) -->
+    <div id="auth-modal" class="fixed inset-0 z-[100] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-8 max-w-md w-full border border-white/10 relative transform transition-all scale-95 opacity-0" id="auth-modal-content">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <h3 class="font-display font-bold text-2xl text-white mb-2" id="auth-title">Create Account</h3>
+                <p class="text-slate-400 text-sm" id="auth-subtitle">Join Divyansh Tech Services today.</p>
+            </div>
+
+            <!-- Google Sign In Button -->
+            <div id="g_id_onload" data-client_id="525637897249-7bjujhid12f71qqi6ndc5eand7r2q8su.apps.googleusercontent.com" data-callback="handleGoogleSignIn" data-auto_prompt="false"></div>
+            <div class="g_id_signin w-full flex justify-center mb-6" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div>
+                <div class="relative flex justify-center text-xs uppercase"><span class="bg-brand-card px-2 text-slate-500">Or continue with email</span></div>
+            </div>
+
+            <div id="auth-form-container">
+                <!-- Dynamically populated by openAuthModal() -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Enterprise Contact Sales Modal -->
+    <div id="enterprise-modal" class="fixed inset-0 z-[100] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-8 max-w-lg w-full border border-brand-purple/30 relative transform transition-all scale-95 opacity-0" id="enterprise-modal-content">
+            <button onclick="closeEnterpriseModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <div class="mb-6">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-12 h-12 rounded-full bg-brand-purple/20 flex items-center justify-center">
+                        <i class="fa-solid fa-building text-brand-purple text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-2xl text-white">Enterprise Solutions</h3>
+                        <p class="text-slate-400 text-sm">Custom IT infrastructure for large teams.</p>
+                    </div>
+                </div>
+            </div>
+
+            <form onsubmit="handleEnterpriseSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Company Name</label>
+                    <input type="text" id="ent-company" name="company" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="Your Company Pvt. Ltd.">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Contact Name</label>
+                        <input type="text" name="contactName" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="Full Name">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Employee Count</label>
+                        <select name="employees" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors">
+                            <option>10 - 50</option>
+                            <option>50 - 200</option>
+                            <option>200 - 500</option>
+                            <option>500+</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Email</label>
+                        <input type="email" id="ent-email" name="email" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="you@company.com">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-1">Phone</label>
+                        <input type="tel" id="ent-phone" name="phone" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="+91 98XXX XXXXX">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Specific Requirements</label>
+                    <textarea name="requirements" rows="3" class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="e.g., 50-seat office network setup, server maintenance, cybersecurity audit..."></textarea>
+                </div>
+
+                <button type="submit" class="w-full btn-glow py-3 rounded-lg bg-gradient-to-r from-brand-purple to-brand-cyan text-white font-bold hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Request Custom Quote
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Support Ticket Modal -->
+    <div id="ticket-modal" class="fixed inset-0 z-[100] hidden modal-backdrop flex items-center justify-center p-4">
+        <div class="glass rounded-2xl p-6 max-w-md w-full border border-white/10 relative transform transition-all scale-95 opacity-0" id="ticket-modal-content">
+            <button onclick="closeTicketModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <h3 class="font-display text-xl font-bold text-white mb-4">Create Support Ticket</h3>
+            <form onsubmit="handleCreateTicket(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Subject</label>
+                    <input type="text" name="subject" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors" placeholder="e.g., Router not working">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Description</label>
+                    <textarea name="description" rows="4" required class="w-full bg-brand-dark/50 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-brand-purple transition-colors resize-none" placeholder="Describe your issue in detail..."></textarea>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-lg bg-brand-purple text-white font-bold hover:bg-brand-purple/80 transition-all">
+                    Submit Ticket
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- AI Chatbot Widget -->
+    <div id="chatbot-widget" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[150]">
+        <!-- Chat Toggle Button -->
+        <button id="chat-toggle-btn" onclick="toggleChatbot()" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-brand-cyan to-brand-emerald shadow-lg hover:shadow-[0_0_30px_rgba(0,240,255,0.5)] transition-all duration-300 flex items-center justify-center group">
+            <i class="fa-solid fa-robot text-xl sm:text-2xl text-brand-dark group-hover:scale-110 transition-transform"></i>
+            <span class="absolute -top-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full animate-pulse"></span>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden absolute bottom-20 right-0 w-[calc(100vw-2rem)] sm:w-[400px] h-[70vh] sm:h-[600px] max-h-[600px] glass rounded-2xl border border-white/10 shadow-2xl flex flex-col overflow-hidden">
+            <!-- Chat Header -->
+            <div class="bg-gradient-to-r from-brand-cyan to-brand-emerald p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                        <i class="fa-solid fa-robot text-xl text-white"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">DTS Assistant</h3>
+                        <p class="text-xs text-white/80">AI-Powered Support</p>
+                    </div>
+                </div>
+                <button onclick="toggleChatbot()" class="text-white/80 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                <!-- Welcome Message -->
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 rounded-full bg-brand-cyan/20 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-robot text-brand-cyan text-sm"></i>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl rounded-tl-none p-3 max-w-[280px]">
+                        <p class="text-sm text-slate-300">Hi! 👋 I'm your DTS Assistant. How can I help you today?</p>
+                        <p class="text-xs text-slate-500 mt-1">Just now</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="flex flex-wrap gap-2 ml-11">
+                    <button onclick="sendQuickMessage('services')" class="px-3 py-1.5 rounded-full bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs hover:bg-brand-cyan/20 transition-all">
+                        📋 View Services
+                    </button>
+                    <button onclick="sendQuickMessage('pricing')" class="px-3 py-1.5 rounded-full bg-brand-emerald/10 border border-brand-emerald/30 text-brand-emerald text-xs hover:bg-brand-emerald/20 transition-all">
+                        💰 Pricing
+                    </button>
+                    <button onclick="sendQuickMessage('book')" class="px-3 py-1.5 rounded-full bg-brand-purple/10 border border-brand-purple/30 text-brand-purple text-xs hover:bg-brand-purple/20 transition-all">
+                        📅 Book Service
+                    </button>
+                    <button onclick="sendQuickMessage('contact')" class="px-3 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs hover:bg-yellow-500/20 transition-all">
+                        📞 Contact Us
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="border-t border-white/10 p-4">
+                <div class="flex gap-2">
+                    <input 
+                        type="text" 
+                        id="chat-input" 
+                        placeholder="Type your message..." 
+                        class="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan transition-colors"
+                        onkeypress="if(event.key==='Enter') sendMessage()"
+                    >
+                    <button onclick="sendMessage()" class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-cyan to-brand-emerald flex items-center justify-center hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all">
+                        <i class="fa-solid fa-paper-plane text-brand-dark"></i>
+                    </button>
+                </div>
+                <div class="flex gap-2 mt-2 text-xs text-slate-500">
+                    <button onclick="sendQuickMessage('help')" class="hover:text-brand-cyan transition-colors">Help</button>
+                    <span>•</span>
+                    <button onclick="sendQuickMessage('faq')" class="hover:text-brand-cyan transition-colors">FAQ</button>
+                    <span>•</span>
+                    <button onclick="clearChat()" class="hover:text-brand-cyan transition-colors">Clear Chat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Calendar Modal -->
+    <div id="custom-calendar-modal" style="display:none;" class="fixed inset-0 z-[300] items-center justify-center p-4">
+        <div id="calendar-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeCalendarOnBackdrop(event)"></div>
+        <div id="calendar-content" class="relative bg-brand-dark border border-white/10 rounded-2xl p-6 max-w-sm w-full shadow-2xl z-10" onclick="event.stopPropagation()">
+            <!-- Calendar content will be dynamically rendered here -->
+        </div>
+    </div>
+
+    <!-- Leaflet Map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="dts-accounting.js?v=20261102v1"></script>
+    <script src="dts-software-admin.js?v=20261102v1"></script>
+    <script src="app.js?v=20261102v1"></script>
+</body>
+</html>
